@@ -9,16 +9,21 @@ c = conn.cursor()
 filename = "i3.txt"
 with open(filename) as f:
   for line in f:
-     res = line.strip().split('/')
-     print res
+     com = line.strip().split(',')
+     res = com[0].strip().split('/')
+     size= com[1]
+     #print "res:"
+     #print res
+     #print "size:"
+     #print size
      if len(res) == 8:
        path = res[4]+'/'+res[5]+'/'+res[6]+'/'+res[7]
-       print path 
-       c.execute("INSERT INTO files VALUES ('%s','','','','','')" % (path))
+       #print path 
+       #print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
+       c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
      else:
        print len(res)
      
-#     exit()
 
 # Save (commit) the changes
 conn.commit()
