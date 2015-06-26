@@ -24,5 +24,7 @@ for key in rs:
   fname = os.path.basename(key.name)
   new_key =  u"%s/%s/%s/%s/%s" % (year,month,day,station,fname)
   print new_key
-  dstBucket.copy_key(new_key, 'noaa.nexradl2', key.name)
-
+  new_key_exists = dstBucket.get_key(new_key,  validate=True)
+  if new_key_exists is None:
+     print "key doesn't exist, moving:"
+     dstBucket.copy_key(new_key, 'noaa.nexradl2', key.name)
