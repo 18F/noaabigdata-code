@@ -41,9 +41,9 @@ print nopath
 
 
 #####
-#num_worker_threads=1
+num_worker_threads=10
 #num_worker_threads=50
-num_worker_threads=100
+#num_worker_threads=100
 conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()
 
@@ -54,8 +54,6 @@ def upload_file(i,item):
   print "dealing with: %s" % i
   print item
 
-  source_path = radar_path_name  % item[0]
-
   filename = item[0]
   if nopath == True:
      #we need to change the path around
@@ -64,6 +62,7 @@ def upload_file(i,item):
      filename = parts[-1]
 
   source_path = radar_path_name + filename
+  print source_path
   source_size = os.stat(source_path).st_size
   #new_key =  /<Year>/<Month>/<Day>/<Nexrad Station>/ <filename>  NWS_NEXRAD_NXL2LG_KAKQ_20010101080000_20010101155959.tar
   parts = item[0].split("/")
