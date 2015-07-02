@@ -40,7 +40,9 @@ for row in c.execute(query):
    # check to see if this file is in azure, and that the file sizes match
    try:
      item = blob_service.get_blob_properties('nexradl2',row[0])
-     if item['content-length'] == row[1]:
+     print item['content-length']
+     print row[1]
+     if (int(item['content-length']) == int(row[1])):
        print "item matches"
        q.append("update files set azure='yes' where path = '%s'" % (row[0]))
      else:
@@ -52,6 +54,7 @@ for row in c.execute(query):
 
    #print item
 
+print q
 for sql in q:
   c.execute(sql)
 
