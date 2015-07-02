@@ -4,7 +4,7 @@ c = conn.cursor()
 
 # Create table
 c.execute('''CREATE TABLE files
-                 (path text, size integer, azure text, aws text, google text, ibm text, occ text)''')
+                 (path text, size integer, azure text, aws text, google text, ibm text, occ text, primary key(path))''')
 c.execute('''CREATE INDEX path_index on files(path)''')
 c.execute('''CREATE INDEX azure_index on files(azure)''')
 c.execute('''CREATE INDEX aws_index on files(aws)''')
