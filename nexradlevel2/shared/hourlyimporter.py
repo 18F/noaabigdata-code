@@ -1,12 +1,15 @@
 import shlex
 import subprocess
 import sqlite3
+import uuid
 
 
 #
 # open connection to nexrad DB
 #
-conn = sqlite3.connect('nexradl2-realtime.db')
+dbfilename = 'nexradl2-realtime.db'
+
+conn = sqlite3.connect(dbfilename)
 c = conn.cursor()
 
 
@@ -66,5 +69,21 @@ conn.close()
 #  loop through the database and upload the files to each provider
 #
 
+# copy the database to the queue for each provider
+unique_filename = uuid.uuid4()
+print unique_filename
+
+awsname = "aws_"+str(unique_filename)+".db"
+msname = "ms_"+str(unique_filename)+".db"
+import shutil
+
+
+
+shutil.copyfile(dbfilename, awsname)
+shutil.copyfile(dbfilename, msname)
+
+#
 # shell out to the standard uploader?
 #
+#os.spawnl(os.P_DETACH, 'some_long_running_command')
+
