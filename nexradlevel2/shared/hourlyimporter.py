@@ -107,6 +107,6 @@ shutil.copyfile(dbfilename, msname)
 mscommand = "python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+msname+" nopath"
 print mscommand
 awscommand = "python ../aws/multithreads3.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+awsname+" nopath"
-print mscommand
+print awscommand
 #os.spawnl(os.P_NOWAIT, mscommand)
 
