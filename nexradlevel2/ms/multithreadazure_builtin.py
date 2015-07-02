@@ -42,7 +42,8 @@ blob_service = BlobService(connection_string=AZURE_STORAGE_CONNECTION_STRING)
 
 
 #####
-num_worker_threads=50
+#num_worker_threads=50
+num_worker_threads=10
 #num_worker_threads=100
 conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()
@@ -88,8 +89,8 @@ def upload_file(i,item):
   filename = item[0]
   if nopath == True:
      #we need to change the path around
-     print(item[0].split())
-     parts = item[0].split()
+     print(item[0].split("/"))
+     parts = item[0].split("/")
      filename = parts[-1]
      
   file = radar_path_name + filename

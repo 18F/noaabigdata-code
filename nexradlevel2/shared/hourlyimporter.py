@@ -19,6 +19,7 @@ c = conn.cursor()
 #
 
 command_line='find  /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ -printf "%h/%f,%s\n"'
+print command_line
 args = shlex.split(command_line)
 proc = subprocess.Popen(args, stdout=subprocess.PIPE)
 (out, err) = proc.communicate()
@@ -59,12 +60,25 @@ for line in lines:
          print "except"
          print line
 
+
 # Save (commit) the changes
 conn.commit()
 
 # We can also close the connection if we are done with it.
 # Just be sure any changes have been committed or they will be lost.
 conn.close()
+
+
+#
+#  check the database against what is already in the cloud.. make sure the file sizes are correct
+#
+
+command_line = "python ../ms/comparedbtoazure.py "+dbfilename+" quick"
+print command_line
+args = shlex.split(command_line)
+proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+(out, err) = proc.communicate()
+print out
 
 #
 #  loop through the database and upload the files to each provider
@@ -80,7 +94,7 @@ import shutil
 
 
 
-#shutil.copyfile(dbfilename, awsname)
+shutil.copyfile(dbfilename, awsname)
 shutil.copyfile(dbfilename, msname)
 
 #
@@ -92,5 +106,7 @@ shutil.copyfile(dbfilename, msname)
 
 mscommand = "python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+msname+" nopath"
 print mscommand
-os.spawnl(os.P_NOWAIT, mscommand)
+awscommand = "python ../aws/multithreads3.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+awsname+" nopath"
+print mscommand
+#os.spawnl(os.P_NOWAIT, mscommand)
 

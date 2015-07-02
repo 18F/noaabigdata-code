@@ -1,9 +1,23 @@
 from azure.storage import BlobService
 import sqlite3
 import os
+import sys
 
 
-conn = sqlite3.connect('nexradl2.db')
+db_name = "nexradl2.db"
+nopath = False
+
+#
+#  sys.argv[1]: dbname
+#
+
+if len(sys.argv) > 1:
+  print sys.argv
+  db_name= sys.argv[1]
+
+print db_name
+
+conn = sqlite3.connect(db_name)
 c = conn.cursor()
 
 AZURE_STORAGE_CONNECTION_STRING = os.environ['AZURE_STORAGE_CONNECTION_STRING']
