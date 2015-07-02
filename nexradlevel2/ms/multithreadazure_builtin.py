@@ -10,6 +10,23 @@ import sys
 from azure.storage import BlobService
 from azure import WindowsAzureError
 
+
+radar_path_name = "/snfs9/q2/levelii_tarfiles/"
+db_name = "nexradl2.db"
+#
+#  sys.argv[1]: source path
+#  sys.argv[2]: dbname
+#
+
+if len(sys.argv) > 1:
+  print sys.argv
+  radar_path_name = sys.argv[1]
+if len(sys.argv) > 2:
+  db_name = sys.argv[2]
+
+print radar_path_name
+print db_name
+
 #####
 
 AZURE_STORAGE_CONNECTION_STRING = os.environ['AZURE_STORAGE_CONNECTION_STRING']
@@ -20,7 +37,7 @@ blob_service = BlobService(connection_string=AZURE_STORAGE_CONNECTION_STRING)
 #####
 num_worker_threads=50
 #num_worker_threads=100
-conn = sqlite3.connect('nexradl2.db',check_same_thread=False)
+conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()
 
 
@@ -61,7 +78,7 @@ class Command(object):
 def upload_file(i,item):
   print "dealing with: %s" % i
   print item
-  file = "/snfs9/q2/levelii_tarfiles/%s" % item[0]
+  file = radar_path_name + item[0]
   print file
   try:
     blob_service.put_block_blob_from_path( 'nexradl2', item[0],  file,  max_connections=5,)
