@@ -1,5 +1,5 @@
 import sqlite3
-conn = sqlite3.connect('nexradl2.db')
+conn = sqlite3.connect('nexradl2-realtime.db')
 c = conn.cursor()
 
 # Create table

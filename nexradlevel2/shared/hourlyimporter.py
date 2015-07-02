@@ -1,5 +1,13 @@
 import shlex
 import subprocess
+import sqlite3
+
+
+#
+# open connection to nexrad DB
+#
+conn = sqlite3.connect('nexradl2-realtime.db')
+c = conn.cursor()
 
 
 #
@@ -38,7 +46,7 @@ for line in lines:
           path = year+month+'/'+year+month+day+'/'+parts[3]+'/'+name
           print path 
           print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
-          #c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
+          c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
        else:
          print "error:"
          print line
@@ -46,6 +54,13 @@ for line in lines:
      except:
          print "except"
          print line
+
+# Save (commit) the changes
+conn.commit()
+
+# We can also close the connection if we are done with it.
+# Just be sure any changes have been committed or they will be lost.
+conn.close()
 
 #
 #  loop through the database and upload the files to each provider
