@@ -15,13 +15,36 @@ from boto.s3.connection import S3Connection
 conn = S3Connection(is_secure=False)
 bucket = conn.get_bucket('noaa-nexrad-l2')
 
+radar_path_name = "/snfs9/q2/levelii_tarfiles/"
+db_name = "nexradl2aws.db"
+nopath = False
+
+#
+#  sys.argv[1]: source path
+#  sys.argv[2]: dbname
+#  sys.argv[3]: nopath
+#
+
+if len(sys.argv) > 1:
+  print sys.argv
+  radar_path_name = sys.argv[1]
+if len(sys.argv) > 2:
+  db_name = sys.argv[2]
+if len(sys.argv) > 3:
+  if sys.argv[3] == "nopath":
+    nopath = True
+
+print radar_path_name
+print db_name
+print nopath
+
 
 
 #####
 #num_worker_threads=1
 #num_worker_threads=50
 num_worker_threads=100
-conn = sqlite3.connect('nexradl2aws.db',check_same_thread=False)
+conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()
 
 
@@ -30,7 +53,17 @@ c = conn.cursor()
 def upload_file(i,item):
   print "dealing with: %s" % i
   print item
-  source_path = "/snfs9/q2/levelii_tarfiles/%s" % item[0]
+
+  source_path = radar_path_name  % item[0]
+
+  filename = item[0]
+  if nopath == True:
+     #we need to change the path around
+     print(item[0].split("/"))
+     parts = item[0].split("/")
+     filename = parts[-1]
+
+  source_path = radar_path_name + filename
   source_size = os.stat(source_path).st_size
   #new_key =  /<Year>/<Month>/<Day>/<Nexrad Station>/ <filename>  NWS_NEXRAD_NXL2LG_KAKQ_20010101080000_20010101155959.tar
   parts = item[0].split("/")
