@@ -2,6 +2,7 @@ import shlex
 import subprocess
 import sqlite3
 import uuid
+import os
 
 
 #
@@ -79,11 +80,17 @@ import shutil
 
 
 
-shutil.copyfile(dbfilename, awsname)
+#shutil.copyfile(dbfilename, awsname)
 shutil.copyfile(dbfilename, msname)
 
 #
 # shell out to the standard uploader?
 #
 #os.spawnl(os.P_DETACH, 'some_long_running_command')
+#  sys.argv[1]: source path
+#  sys.argv[2]: dbname
+
+mscommand = "python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+msname+" nopath"
+print mscommand
+os.spawnl(os.P_NOWAIT, mscommand)
 

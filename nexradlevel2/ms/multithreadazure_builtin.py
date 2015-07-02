@@ -13,9 +13,12 @@ from azure import WindowsAzureError
 
 radar_path_name = "/snfs9/q2/levelii_tarfiles/"
 db_name = "nexradl2.db"
+nopath = False
+
 #
 #  sys.argv[1]: source path
 #  sys.argv[2]: dbname
+#  sys.argv[3]: nopath
 #
 
 if len(sys.argv) > 1:
@@ -23,9 +26,13 @@ if len(sys.argv) > 1:
   radar_path_name = sys.argv[1]
 if len(sys.argv) > 2:
   db_name = sys.argv[2]
+if len(sys.argv) > 3:
+  if sys.argv[3] == "nopath":
+    nopath = True
 
 print radar_path_name
 print db_name
+print nopath
 
 #####
 
@@ -78,7 +85,14 @@ class Command(object):
 def upload_file(i,item):
   print "dealing with: %s" % i
   print item
-  file = radar_path_name + item[0]
+  filename = item[0]
+  if nopath == True:
+     #we need to change the path around
+     print(item[0].split())
+     parts = item[0].split()
+     filename = parts[-1]
+     
+  file = radar_path_name + filename
   print file
   try:
     blob_service.put_block_blob_from_path( 'nexradl2', item[0],  file,  max_connections=5,)
