@@ -73,12 +73,27 @@ conn.close()
 #  check the database against what is already in the cloud.. make sure the file sizes are correct
 #
 
+
+#
+# MS
+#
 command_line = "python ../ms/comparedbtoazure.py "+dbfilename+" quick"
 print command_line
 args = shlex.split(command_line)
 proc = subprocess.Popen(args, stdout=subprocess.PIPE)
 (out, err) = proc.communicate()
 print out
+
+#
+# AWS
+#
+command_line = "python ../aws/comparedbtos3.py "+dbfilename+" quick"
+print command_line
+args = shlex.split(command_line)
+proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+(out, err) = proc.communicate()
+print out
+
 
 #
 #  loop through the database and upload the files to each provider

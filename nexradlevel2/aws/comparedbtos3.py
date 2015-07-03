@@ -51,11 +51,11 @@ c = conn.cursor()
 q = []
 query = "SELECT * FROM files"
 if quick == True:
-  query = "SELECT * FROM files where azure=''"
+  query = "SELECT * FROM files where aws=''"
 
 for row in c.execute(query):
    print row
-   # check to see if this file is in azure, and that the file sizes match
+   # check to see if this file is in aws, and that the file sizes match
    try:
      keyname = convertToS3Key(row[0])
      print keyname
