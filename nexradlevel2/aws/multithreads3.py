@@ -53,58 +53,61 @@ c = conn.cursor()
 def upload_file(i,item):
   print "dealing with: %s" % i
   print item
+  try:
+    filename = item[0]
+    if nopath == True:
+       #we need to change the path around
+       print(item[0].split("/"))
+       parts = item[0].split("/")
+       filename = parts[-1]
 
-  filename = item[0]
-  if nopath == True:
-     #we need to change the path around
-     print(item[0].split("/"))
-     parts = item[0].split("/")
-     filename = parts[-1]
-
-  source_path = radar_path_name + filename
-  print source_path
-  source_size = os.stat(source_path).st_size
-  #new_key =  /<Year>/<Month>/<Day>/<Nexrad Station>/ <filename>  NWS_NEXRAD_NXL2LG_KAKQ_20010101080000_20010101155959.tar
-  parts = item[0].split("/")
-  #print  parts
-  year = parts[1][0:4]
-  #print  year
-  month = parts[1][4:6]
-  #print  month
-  day = parts[1][6:8]
-  #print  day
-  station = parts[2]
-  #print  station
-  fname = os.path.basename(source_path)
-  new_key =  u"%s/%s/%s/%s/%s" % (year,month,day,station,fname)
-  #a = new_key.split("/")
-  #print a
-  #print  "[%s]" % item[0] 
-  #print  "[%s]" % new_key
-  #boto.set_stream_logger('boto')
-  #mp = bucket.initiate_multipart_upload(os.path.basename(source_path))
-  print "before bucket"
-  mp = bucket.initiate_multipart_upload(new_key)
-  #mp = bucket.initiate_multipart_upload(item[0])
-  print "after bucket"
-  chunk_size = 52428800
-  chunk_count = int(math.ceil(source_size / float(chunk_size)))
-  print source_path
-  print chunk_count
-  # Send the file parts, using FileChunkIO to create a file-like object
-  # that points to a certain byte range within the original file. We
-  # set bytes to never exceed the original file size.
-  for i in range(chunk_count):
-    offset = chunk_size * i
-    bytes = min(chunk_size, source_size - offset)
-    with FileChunkIO(source_path, 'r', offset=offset,
+    source_path = radar_path_name + filename
+    print source_path
+    source_size = os.stat(source_path).st_size
+    #new_key =  /<Year>/<Month>/<Day>/<Nexrad Station>/ <filename>  NWS_NEXRAD_NXL2LG_KAKQ_20010101080000_20010101155959.tar
+    parts = item[0].split("/")
+    #print  parts
+    year = parts[1][0:4]
+    #print  year
+    month = parts[1][4:6]
+    #print  month
+    day = parts[1][6:8]
+    #print  day
+    station = parts[2]
+    #print  station
+    fname = os.path.basename(source_path)
+    new_key =  u"%s/%s/%s/%s/%s" % (year,month,day,station,fname)
+    #a = new_key.split("/")
+    #print a
+    #print  "[%s]" % item[0] 
+    #print  "[%s]" % new_key
+    #boto.set_stream_logger('boto')
+    #mp = bucket.initiate_multipart_upload(os.path.basename(source_path))
+    print "before bucket"
+    mp = bucket.initiate_multipart_upload(new_key)
+    #mp = bucket.initiate_multipart_upload(item[0])
+    print "after bucket"
+    chunk_size = 52428800
+    chunk_count = int(math.ceil(source_size / float(chunk_size)))
+    print source_path
+    print chunk_count
+    # Send the file parts, using FileChunkIO to create a file-like object
+    # that points to a certain byte range within the original file. We
+    # set bytes to never exceed the original file size.
+    for i in range(chunk_count):
+      offset = chunk_size * i
+      bytes = min(chunk_size, source_size - offset)
+      with FileChunkIO(source_path, 'r', offset=offset,
                          bytes=bytes) as fp:
-      mp.upload_part_from_file(fp, part_num=i + 1)
+        mp.upload_part_from_file(fp, part_num=i + 1)
 
-  # Finish the upload
-  mp.complete_upload()
-  print "finished uploading %s " % source_path
-
+    # Finish the upload
+    mp.complete_upload()
+    print "finished uploading %s " % source_path
+    sys.stdout.flush()
+  except:
+   print "upload failed %s" % source_path
+   return 0
   return 1
 
 
