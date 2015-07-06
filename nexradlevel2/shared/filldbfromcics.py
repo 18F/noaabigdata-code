@@ -1,12 +1,13 @@
 import sqlite3
-conn = sqlite3.connect('nexradl2.db')
+conn = sqlite3.connect('nexradl2aws.db')
 c = conn.cursor()
 
 
 #open the file list and look for files
 
 # Insert a row of data
-filename = "i3.txt"
+#filename = "i3.txt"
+filename = "2012-a.txt"
 with open(filename) as f:
   for line in f:
      com = line.strip().split(',')

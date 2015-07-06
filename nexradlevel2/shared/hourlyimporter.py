@@ -51,7 +51,21 @@ for line in lines:
           path = year+month+'/'+year+month+day+'/'+parts[3]+'/'+name
           #print path 
           #print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
-          c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
+          try:
+            c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
+          except:
+            print "insert exception"
+          #print "here"
+          try:
+            rows = c.execute("SELECT size FROM files where path='%s' " % path )
+          except:
+            print "select exception"
+          sizedb = c.fetchone()[0]
+          #print "size %s %s " % (size,sizedb)
+          if (int(size) != int(sizedb)):
+             print "size doesn't match %s %s" % (size,sizedb)
+             # update file set the size regardless.. if it is bigger maybe? hmm.. sql?
+             c.execute("update files set size='%s',azure='', aws='' where path='%s' " % (size,path))
        else:
          print "error:"
          print line
