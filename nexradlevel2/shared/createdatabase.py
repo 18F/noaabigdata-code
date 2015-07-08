@@ -1,5 +1,21 @@
 import sqlite3
-conn = sqlite3.connect('nexradl2aws.db')
+import sys
+
+db_name = 'nexradl2.db'
+
+#
+#  sys.argv[1]: dbname
+#  sys.argv[2]: dbname
+#  sys.argv[3]: nopath
+#
+
+if len(sys.argv) > 1:
+  print sys.argv
+  db_name = sys.argv[1]
+
+print db_name
+
+conn = sqlite3.connect(db_name)
 c = conn.cursor()
 
 # Create table
