@@ -37,7 +37,28 @@ with open(filename) as f:
        path = res[4]+'/'+res[5]+'/'+res[6]+'/'+res[7]
        #print path 
        #print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
-       c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
+       #
+       # insert this entry into the DB - it will fail if it is already in the DB
+       #
+       try:
+          c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
+       except:
+          # this failure is ok, if it is already in the DB
+          print "insert exception - already in db?"
+          # 
+          # check to see if the row matches the size, ie: if there was a partial file in the path last time, we should
+          # double check
+          try:
+            rows = c.execute("SELECT size FROM files where path='%s' " % path )
+          except:
+            print "select exception"
+          sizedb = c.fetchone()[0]
+          #print "size %s %s " % (size,sizedb)
+          if (int(size) != int(sizedb)):
+             print "size doesn't match %s %s" % (size,sizedb)
+             # update file set the size regardless.. if it is bigger maybe? hmm.. sql?
+             c.execute("update files set size='%s',azure='', aws='' where path='%s' " % (size,path))
+
      else:
        print len(res)
      
