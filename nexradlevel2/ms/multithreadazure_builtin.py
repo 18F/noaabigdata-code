@@ -114,6 +114,7 @@ def dbworker(i,dbq):
     c.execute("update files set azure='yes' where path = '%s'" % (item[0]))
     conn.commit()
     dbq.task_done()
+    sys.stdout.flush()
 
 def worker(i,q,dbq):
    while True:
