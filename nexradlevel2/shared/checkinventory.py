@@ -9,14 +9,14 @@ db_name = 'nexradl2.db'
 #
 
 if len(sys.argv) > 1:
-  print sys.argv
+  #print sys.argv
   db_name = sys.argv[1]
 
 if len(sys.argv) > 2:
   inventory_name = sys.argv[2]
 
-print db_name
-print inventory_name
+#print db_name
+#print inventory_name
 
 conn = sqlite3.connect(db_name)
 c = conn.cursor()
