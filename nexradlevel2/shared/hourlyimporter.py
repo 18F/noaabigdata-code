@@ -86,7 +86,9 @@ for line in lines:
           try:
             c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
           except:
-            print "insert exception"
+            #print "insert exception"
+            # this is already in our database
+            error = "insert exception"
           #print "here"
           try:
             rows = c.execute("SELECT size FROM files where path='%s' " % path )
