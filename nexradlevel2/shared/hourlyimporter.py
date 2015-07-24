@@ -3,6 +3,38 @@ import subprocess
 import sqlite3
 import uuid
 import os
+from threading import Thread
+import threading
+
+
+class Command(object):
+    def __init__(self, cmd):
+        self.cmd = cmd
+        self.process = None
+
+    def run(self, timeout):
+        result = 1
+        def target():
+            #print 'Thread started'
+            self.process = subprocess.Popen(self.cmd, shell=True,preexec_fn=os.setsid)
+            self.process.communicate()
+            #print 'Thread finished'
+
+        thread = threading.Thread(target=target)
+        thread.start()
+
+        thread.join(timeout)
+        if thread.is_alive():
+            print 'Terminating process'
+            try:
+              os.killpg(self.process.pid, signal.SIGTERM)
+              #self.process.terminate()
+              thread.join()
+            except:
+              print "exception?"
+            result = -1
+        #print self.process.returncode
+        return result
 
 
 #
@@ -135,7 +167,37 @@ shutil.copyfile(dbfilename, msname)
 
 mscommand = "python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+msname+" nopath"
 print mscommand
+#command = Command(mscommand)
+#result = command.run(timeout=120)
 awscommand = "python ../aws/multithreads3.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+awsname+" nopath"
 print awscommand
+#command = Command(awscommand)
+#result = command.run(timeout=120)
 #os.spawnl(os.P_NOWAIT, mscommand)
+
+def call_script(i,cmd):
+    print "call_script:"
+    print i 
+    print cmd
+    command = Command(cmd)
+    result = command.run(timeout=1200)
+
+
+#
+# create two threads and then wait for them to finish
+#
+t1 = Thread(target=call_script, args=(1,mscommand))
+t2 = Thread(target=call_script, args=(2,awscommand))
+t1.daemon = True
+t2.daemon = True
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+
+#
+# remove temporary databases
+#
+os.remove(awsname)
+os.remove(msname)
 
