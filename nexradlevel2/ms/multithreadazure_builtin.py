@@ -37,14 +37,14 @@ print nopath
 #####
 
 AZURE_STORAGE_CONNECTION_STRING = os.environ['AZURE_STORAGE_CONNECTION_STRING']
-
+print AZURE_STORAGE_CONNECTION_STRING
 blob_service = BlobService(connection_string=AZURE_STORAGE_CONNECTION_STRING)
 
 
 #####
 #num_worker_threads=50
-#num_worker_threads=10
-num_worker_threads=20
+num_worker_threads=10
+#num_worker_threads=20
 #num_worker_threads=100
 conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()

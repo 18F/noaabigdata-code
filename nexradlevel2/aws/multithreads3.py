@@ -42,8 +42,8 @@ print nopath
 
 #####
 #num_worker_threads=10
-num_worker_threads=30
-#num_worker_threads=50
+#num_worker_threads=30
+num_worker_threads=50
 #num_worker_threads=100
 conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()
