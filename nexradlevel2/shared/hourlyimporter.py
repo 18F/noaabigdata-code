@@ -167,11 +167,11 @@ shutil.copyfile(dbfilename, msname)
 #  sys.argv[1]: source path
 #  sys.argv[2]: dbname
 
-mscommand = "python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+msname+" nopath"
+mscommand = "/usr/local/uvcdat/2.0.0/bin/python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ ./"+msname+" nopath >ms.out"
 print mscommand
 #command = Command(mscommand)
 #result = command.run(timeout=120)
-awscommand = "python ../aws/multithreads3.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ "+awsname+" nopath"
+awscommand = "/usr/local/uvcdat/2.0.0/bin/python ../aws/multithreads3.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ ./"+awsname+" nopath > aws.out"
 print awscommand
 #command = Command(awscommand)
 #result = command.run(timeout=120)
@@ -183,6 +183,8 @@ def call_script(i,cmd):
     print cmd
     command = Command(cmd)
     result = command.run(timeout=1200)
+    print "result: "
+    print result
 
 
 #
