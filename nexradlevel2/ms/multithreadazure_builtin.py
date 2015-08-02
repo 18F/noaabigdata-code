@@ -43,8 +43,8 @@ blob_service = BlobService(connection_string=AZURE_STORAGE_CONNECTION_STRING)
 
 #####
 #num_worker_threads=50
-num_worker_threads=15
-#num_worker_threads=20
+#num_worker_threads=15
+num_worker_threads=20
 #num_worker_threads=100
 conn = sqlite3.connect(db_name,check_same_thread=False)
 c = conn.cursor()
@@ -101,6 +101,10 @@ def upload_file(i,item):
     return 1
   except WindowsAzureError as ex:
     print "exception: %s" % ex
+    print "exception: %s" % file
+    sys.stdout.flush()
+    return 0
+  except:
     print "exception: %s" % file
     sys.stdout.flush()
     return 0
