@@ -2,6 +2,9 @@ import sqlite3
 import sys
 
 db_name = 'nexradl2.db'
+filename = "i3.txt"
+#filename = "2012-a.txt"
+#filename = "2014-2.txt"
 
 #
 #  sys.argv[1]: dbname
@@ -12,6 +15,8 @@ db_name = 'nexradl2.db'
 if len(sys.argv) > 1:
   print sys.argv
   db_name = sys.argv[1]
+if len(sys.argv) > 2:
+  filename = sys.argv[2]
 
 print db_name
 
@@ -22,8 +27,7 @@ c = conn.cursor()
 #open the file list and look for files
 
 # Insert a row of data
-filename = "i3.txt"
-#filename = "2012-a.txt"
+
 with open(filename) as f:
   for line in f:
      com = line.strip().split(',')
