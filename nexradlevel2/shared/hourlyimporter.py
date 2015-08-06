@@ -56,8 +56,8 @@ c = conn.cursor()
 #
 
 datedir = datetime.date.today().strftime('%Y%m')
-radarpath = "/snfs9/q2/levelii_tarfiles"
-radardatepath = "%s/%s/" % (radarpath ,datedir)
+radarpath = "/snfs9/q2/levelii_tarfiles/"
+radardatepath = "%s%s/" % (radarpath ,datedir)
 print datedir
 
 #command_line='find  /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ -printf "%h/%f,%s\n"'
