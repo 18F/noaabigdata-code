@@ -5,6 +5,7 @@ import uuid
 import os
 from threading import Thread
 import threading
+import datetime
 
 
 class Command(object):
@@ -50,7 +51,17 @@ c = conn.cursor()
 # First put the files into the database 
 #
 
-command_line='find  /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ -printf "%h/%f,%s\n"'
+# AJS TODO BUG?
+# are we going to miss some files as we wrap a month??
+#
+
+datedir = datetime.date.today().strftime('%Y%m')
+radarpath = "/snfs9/q2/levelii_tarfiles"
+radardatepath = "%s/%s/" % (radarpath ,datedir)
+print datedir
+
+#command_line='find  /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ -printf "%h/%f,%s\n"'
+command_line = 'find  %s -mtime -1 -printf "%%h/%%f,%%s\n"' % radardatepath
 print command_line
 args = shlex.split(command_line)
 proc = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -59,30 +70,30 @@ proc = subprocess.Popen(args, stdout=subprocess.PIPE)
 lines = out.split('\n')
 #print lines
 for line in lines:
-     #print line
+     print line
      try:
        com = line.strip().split(',')
        res = com[0].strip().split('/')
        size= com[1]
-       #print "res:"
-       #print res
-       #print "size:"
-       #print size
+       print "res:"
+       print res
+       print "size:"
+       print size
        if len(res) == 8:
           name = res[7]
-          #print name
+          print name
 #/200605/20060529/KGRK/NWS_NEXRAD_NXL2LG_KGRK_20060529000000_20060529075959.tar
           parts = name.split('_')
-          #print parts
+          print parts
           year = parts[4][0:4]
-          #print year
+          print year
           month = parts[4][4:6]
-          #print month
+          print month
           day = parts[4][6:8]
-          #print day
+          print day
           path = year+month+'/'+year+month+day+'/'+parts[3]+'/'+name
-          #print path 
-          #print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
+          print path 
+          print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
           try:
             c.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
           except:
@@ -167,11 +178,11 @@ shutil.copyfile(dbfilename, msname)
 #  sys.argv[1]: source path
 #  sys.argv[2]: dbname
 
-mscommand = "/usr/local/uvcdat/2.0.0/bin/python ../ms/multithreadazure_builtin.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ ./"+msname+" nopath >ms.out"
+mscommand = "/usr/local/uvcdat/2.0.0/bin/python ../ms/multithreadazure_builtin.py "+radarpath+" ./"+msname+" >ms.out"
 print mscommand
 #command = Command(mscommand)
 #result = command.run(timeout=120)
-awscommand = "/usr/local/uvcdat/2.0.0/bin/python ../aws/multithreads3.py /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ ./"+awsname+" nopath > aws.out"
+awscommand = "/usr/local/uvcdat/2.0.0/bin/python ../aws/multithreads3.py "+radarpath+" ./"+awsname+" > aws.out"
 print awscommand
 #command = Command(awscommand)
 #result = command.run(timeout=120)
