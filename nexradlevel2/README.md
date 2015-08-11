@@ -6,7 +6,9 @@ There are two workflows. One handles mass uploads, the other uploads today's dat
 
 The workflow for the mass upload:
 + create a blank sqlite database
-  createdatabase.py <nameofdatabasefile>
+
+       createdatabase.py <nameofdatabasefile>
+
 + create a listing of the files to upload using find
   cicsfiledump.sh
 + insert the data from the file into a database:
