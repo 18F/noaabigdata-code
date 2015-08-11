@@ -8,8 +8,7 @@ filename = "i3.txt"
 
 #
 #  sys.argv[1]: dbname
-#  sys.argv[2]: dbname
-#  sys.argv[3]: nopath
+#  sys.argv[2]: filename
 #
 
 if len(sys.argv) > 1:
