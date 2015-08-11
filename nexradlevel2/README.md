@@ -25,7 +25,8 @@ The workflow for the mass upload:
 Workflow for near realtime:
  + onetime, create a blank sqlite database
  
-      createdatabase.py nexradl2-realtime.db
+       createdatabase.py nexradl2-realtime.db
+
  + from cron, cron_update.sh is called 
  + cron calls hourlyimporter.py
   
