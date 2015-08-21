@@ -7,6 +7,8 @@ from threading import Thread
 import threading
 import datetime
 import createdatabase
+import traceback
+import sys
 
 
 class Command(object):
@@ -51,9 +53,22 @@ c = conn.cursor()
 #
 # read the years database and get a list of all the years that aren't done (done='no')
 #
-rows = c.execute("SELECT year FROM years where done='no' " )
-for row in rows:
-  year = row[0]
+yearrows = c.execute("SELECT year FROM years where done='no' " )
+years = []
+for yrow in yearrows:
+  years.append(yrow[0])
+# Save (commit) the changes
+conn.commit()
+
+# We can also close the connection if we are done with it.
+# Just be sure any changes have been committed or they will be lost.
+conn.close()
+
+
+
+
+
+for year in years:
   print year
   skip = False
   #
@@ -83,11 +98,14 @@ for row in rows:
         createdatabase.createdatabase(msdb)
         print "missing "+msdb
 
+      #open the databases
+     print "opening: "+msdb
      msconn = sqlite3.connect(msdb)
-     msc = conn.cursor()
+     msc = msconn.cursor()
 
+     print "opening: "+awsdb
      awsconn = sqlite3.connect(awsdb)
-     awsc = conn.cursor()
+     awsc = awsconn.cursor()
 
 
 #    - grab a list of files
@@ -107,7 +125,6 @@ for row in rows:
 #    - if there are files,
 #      - do inserts to add the new files (right now this is lazy try to overwrite)
 #
-      #open the databases
           try:
             com = line.strip().split(',')
             res = com[0].strip().split('/')
@@ -137,22 +154,22 @@ for row in rows:
 
                try:
                  msc.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
-               except:
-                 #print "insert exception"
+               except Exception,err:
+                 print "insert exception"
+                 print Exception, err
                  # this is already in our database
                  error = "insert exception"
                #print "here"
                try:
                  rows = msc.execute("SELECT size FROM files where path='%s' " % path )
+                 sizedb = msc.fetchone()[0]
+                 #print "size %s %s " % (size,sizedb)
+                 if (int(size) != int(sizedb)):
+                    print "size doesn't match %s %s" % (size,sizedb)
+                    # update file set the size regardless.. if it is bigger maybe? hmm.. sql?
+                    msc.execute("update files set size='%s',azure='', aws='' where path='%s' " % (size,path))
                except:
                  print "select exception"
-               sizedb = msc.fetchone()[0]
-               #print "size %s %s " % (size,sizedb)
-               if (int(size) != int(sizedb)):
-                  print "size doesn't match %s %s" % (size,sizedb)
-                  # update file set the size regardless.. if it is bigger maybe? hmm.. sql?
-                  msc.execute("update files set size='%s',azure='', aws='' where path='%s' " % (size,path))
-
 
                try:
                  awsc.execute("INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size))
@@ -163,14 +180,14 @@ for row in rows:
                #print "here"
                try:
                  rows = awsc.execute("SELECT size FROM files where path='%s' " % path )
+                 sizedb = awsc.fetchone()[0]
+                 #print "size %s %s " % (size,sizedb)
+                 if (int(size) != int(sizedb)):
+                    print "size doesn't match %s %s" % (size,sizedb)
+                    # update file set the size regardless.. if it is bigger maybe? hmm.. sql?
+                    awsc.execute("update files set size='%s',azure='', aws='' where path='%s' " % (size,path))
                except:
                  print "select exception"
-               sizedb = awsc.fetchone()[0]
-               #print "size %s %s " % (size,sizedb)
-               if (int(size) != int(sizedb)):
-                  print "size doesn't match %s %s" % (size,sizedb)
-                  # update file set the size regardless.. if it is bigger maybe? hmm.. sql?
-                  awsc.execute("update files set size='%s',azure='', aws='' where path='%s' " % (size,path))
 
 
 
@@ -181,12 +198,16 @@ for row in rows:
 
 
 
-          except:
-              print "except"
+          except Exception,err:
+              print "big except"
+              print Exception, err
+              print (traceback.format_exc())
               print line
+              print "after big except"
 
 
      # close the database
+     print "closing ms and aws db"+msdb+" "+awsdb
      msconn.commit()
      awsconn.commit()
      msconn.close()
@@ -202,11 +223,4 @@ for row in rows:
      print awscommand
      os.system(awscommand)
 
-
-# Save (commit) the changes
-conn.commit()
-
-# We can also close the connection if we are done with it.
-# Just be sure any changes have been committed or they will be lost.
-conn.close()
 
