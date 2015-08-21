@@ -2,3 +2,4 @@
 source /home/asteremberg/.bashrc
 cd /home/asteremberg/noaabigdata-code/nexradlevel2/shared
 python hourlyimporter.py > hourly.out
+python continualimporter.py > continous.out 
