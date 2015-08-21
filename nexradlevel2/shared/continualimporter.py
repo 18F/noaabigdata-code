@@ -135,18 +135,18 @@ for year in years:
             print size
             if len(res) == 8:
                name = res[7]
-               print name
+               #print name
      #/200605/20060529/KGRK/NWS_NEXRAD_NXL2LG_KGRK_20060529000000_20060529075959.tar
                parts = name.split('_')
-               print parts
+               #print parts
                year = parts[4][0:4]
-               print year
+               #print year
                month = parts[4][4:6]
-               print month
+               #print month
                day = parts[4][6:8]
-               print day
+               #print day
                path = year+month+'/'+year+month+day+'/'+parts[3]+'/'+name
-               print path 
+               #print path 
                print "INSERT INTO files VALUES ('%s','%s','','','','','')" % (path,size)
 
 
