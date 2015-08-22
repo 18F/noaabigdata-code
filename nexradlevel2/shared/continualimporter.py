@@ -71,6 +71,7 @@ conn.close()
 for year in years:
   print year
   skip = False
+  running = 0
   #
   # for each year
   #    - check to see if the database is being used, ie: there are any processes using it
@@ -79,13 +80,16 @@ for year in years:
   for pid in pids:
     try:
         cmdline = open(os.path.join('/proc', pid, 'cmdline'), 'rb').read()
+        if "continualimporter.py" in cmdline:
+           running = running + 1
         if "nexradl2-"+str(year)+".db" in cmdline:
             print cmdline
             skip = True 
          
     except IOError: # proc has already terminated
         continue
-  if skip == False:
+
+  if running < 2 and skip == False:
 
 
 #      - make sure there is a database for each provider
@@ -129,10 +133,10 @@ for year in years:
             com = line.strip().split(',')
             res = com[0].strip().split('/')
             size= com[1]
-            print "res:"
-            print res
-            print "size:"
-            print size
+            #print "res:"
+            #print res
+            #print "size:"
+            #print size
             if len(res) == 8:
                name = res[7]
                #print name
