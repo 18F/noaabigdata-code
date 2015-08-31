@@ -56,7 +56,8 @@ c = conn.cursor()
 #
 
 datedir = datetime.date.today().strftime('%Y%m')
-radarpath = "/snfs9/q2/levelii_tarfiles/"
+#radarpath = "/snfs9/q2/levelii_tarfiles/"
+radarpath = "/snfs4/q2/levelii_tarfiles/"
 radardatepath = "%s%s/" % (radarpath ,datedir)
 print datedir
 
