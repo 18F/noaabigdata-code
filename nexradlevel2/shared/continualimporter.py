@@ -53,10 +53,10 @@ c = conn.cursor()
 #
 # read the years database and get a list of all the years that aren't done (done='no')
 #
-yearrows = c.execute("SELECT year FROM years where done='no' " )
+yearrows = c.execute("SELECT year,path FROM years where done='no' " )
 years = []
 for yrow in yearrows:
-  years.append(yrow[0])
+  years.append((yrow[0],yrow[1]))
 # Save (commit) the changes
 conn.commit()
 
@@ -68,8 +68,9 @@ conn.close()
 
 
 
-for year in years:
+for year,path in years:
   print year
+  print path 
   skip = False
   running = 0
   #
@@ -114,6 +115,9 @@ for year in years:
 
 #    - grab a list of files
      radarpath = "/snfs9/q2/levelii_tarfiles/"
+     if path:
+        radarpath = path + "/"
+        
      radardatepath = "%s%s??" % (radarpath ,year)
      command_line = 'find  %s -printf "%%h/%%f,%%s\n"' % radardatepath
      print command_line
