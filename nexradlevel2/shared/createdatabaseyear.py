@@ -18,7 +18,7 @@ c = conn.cursor()
 
 # Create table
 c.execute('''CREATE TABLE years
-                 (year integer, size numberoffiles, done text, primary key(year))''')
+                 (year integer, size numberoffiles, done text, path text, primary key(year))''')
 c.execute('''CREATE INDEX year_index on years(year)''')
 
 for year in range(1991, 2014):
