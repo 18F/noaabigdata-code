@@ -62,7 +62,10 @@ radardatepath = "%s%s/" % (radarpath ,datedir)
 print datedir
 
 #command_line='find  /export/brick-headnode-1/brick/anon-ftp/nmqtransfer/latest-data/ -printf "%h/%f,%s\n"'
+#only grab today's files
 command_line = 'find  %s -mtime -1 -printf "%%h/%%f,%%s\n"' % radardatepath
+# uncomment this to backfill if needed
+#command_line = 'find  %s  -printf "%%h/%%f,%%s\n"' % radardatepath
 print command_line
 args = shlex.split(command_line)
 proc = subprocess.Popen(args, stdout=subprocess.PIPE)
